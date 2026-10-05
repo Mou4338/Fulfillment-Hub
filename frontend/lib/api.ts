@@ -1,5 +1,5 @@
 
-export const API_URL = (process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
+export const API_URL = (process.env.NEXTJS_PUBLIC_API_URL || "http://localhost:8000").replace(/\/$/, "");
 
 type Identity = { role: "office" | "warehouse"; user: string };
 let identity: Identity = { role: "office", user: "Priya (Office)" };
