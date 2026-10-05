@@ -1,0 +1,184 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ------------------------------------------------------------------------------------------------
+   Fulfillment Hub design system
+   - One accent (teal) for actions and "you are here"; navy for the frame; colour otherwise means
+     status only: green done · blue in progress · amber needs attention · red act now.
+   - Spacing rhythm: 4 / 8 / 12 / 16 / 24 / 32 px. Cards pad 20–24px, sections sit 24–32px apart.
+   ------------------------------------------------------------------------------------------------ */
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+  html {
+    -webkit-text-size-adjust: 100%;
+    scroll-padding-top: 88px;
+  }
+  body {
+    @apply bg-canvas text-[14px] leading-6 text-ink antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  h1, h2, h3, h4 {
+    @apply tracking-tight text-ink;
+  }
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-500 ring-offset-2 ring-offset-white;
+  }
+  ::selection {
+    @apply bg-brand-100 text-brand-900;
+  }
+  /* thin, quiet scrollbars */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #cbd5e1 transparent;
+  }
+}
+
+@layer components {
+  /* ---------- surfaces */
+  .card {
+    @apply rounded-xl border border-line bg-white shadow-card;
+  }
+  .card-pad {
+    @apply p-5 sm:p-6;
+  }
+  .card-header {
+    @apply flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4 sm:px-6;
+  }
+  .card-title {
+    @apply text-[15px] font-semibold text-ink;
+  }
+  .card-sub {
+    @apply text-[13px] text-ink-muted;
+  }
+  .panel-muted {
+    @apply rounded-xl border border-line bg-slate-50/70;
+  }
+
+  /* ---------- headings */
+  .section-title {
+    @apply flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-ink-muted before:h-3.5 before:w-1 before:rounded-full before:bg-brand-500 before:content-[''];
+  }
+  .eyebrow {
+    @apply text-xs font-semibold uppercase tracking-wider text-brand-700;
+  }
+
+  /* ---------- buttons */
+  .btn {
+    @apply inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-lg px-3.5 py-2 text-sm font-semibold leading-5 transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+  .btn-primary {
+    @apply bg-brand-600 text-white shadow-sm shadow-brand-900/10 hover:bg-brand-700 active:bg-brand-800;
+  }
+  .btn-secondary {
+    @apply border border-slate-300 bg-white text-ink shadow-sm shadow-slate-900/5 hover:border-slate-400 hover:bg-slate-50 active:bg-slate-100;
+  }
+  .btn-ghost {
+    @apply text-ink-soft hover:bg-slate-100 hover:text-ink;
+  }
+  .btn-danger {
+    @apply bg-red-600 text-white shadow-sm hover:bg-red-700;
+  }
+  .btn-warn {
+    @apply border border-amber-300 bg-amber-50 text-amber-900 hover:bg-amber-100;
+  }
+  /* Warehouse screens: big, obvious, touch-friendly */
+  .btn-xl {
+    @apply min-h-[52px] rounded-xl px-5 text-base;
+  }
+  .btn-icon {
+    @apply h-10 w-10 p-0;
+  }
+
+  /* ---------- forms */
+  .input {
+    @apply h-10 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-ink shadow-sm shadow-slate-900/[0.03] placeholder:text-ink-faint hover:border-slate-400 focus:border-brand-500 focus:outline-none focus:ring-4 focus:ring-brand-500/15;
+  }
+  textarea.input {
+    @apply h-auto py-2;
+  }
+  .label {
+    @apply mb-1.5 block text-xs font-semibold text-ink-soft;
+  }
+
+  /* ---------- small things */
+  .chip {
+    @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-0.5 text-xs font-semibold leading-5 ring-1 ring-inset;
+  }
+  .kbd {
+    @apply inline-flex h-5 min-w-[20px] items-center justify-center rounded border border-slate-300 bg-white px-1 font-mono text-[11px] font-semibold text-ink-muted shadow-sm;
+  }
+  .mono {
+    @apply font-mono text-[0.92em] tracking-tight;
+  }
+  .link {
+    @apply font-semibold text-brand-700 underline-offset-2 hover:text-brand-800 hover:underline;
+  }
+  .divider {
+    @apply border-t border-line;
+  }
+
+  /* ---------- tables */
+  .table-head {
+    @apply border-b border-line bg-slate-50 text-left text-[11px] font-semibold uppercase tracking-wider text-ink-muted;
+  }
+  .table-row {
+    @apply transition-colors hover:bg-slate-50/80;
+  }
+
+  /* ---------- tabs (segmented) */
+  .tabs {
+    @apply inline-flex flex-wrap gap-1 rounded-xl border border-line bg-white p-1 shadow-card;
+  }
+  .tab {
+    @apply rounded-lg px-3 py-1.5 text-sm font-semibold text-ink-muted transition-colors hover:bg-slate-100 hover:text-ink;
+  }
+  .tab-active {
+    @apply bg-navy-900 text-white hover:bg-navy-900 hover:text-white;
+  }
+}
+
+/* Grid items default to min-width:auto, so one long line (a truncated title, a wide table)
+   pushed whole cards off-screen on phones. Let grid children shrink; their own content scrolls. */
+.grid > * {
+  min-width: 0;
+}
+
+/* Tables inside cards: comfortable rows and a clear hover everywhere, without touching each page. */
+.card table tbody tr {
+  transition: background-color 120ms ease;
+}
+.card table tbody tr:hover {
+  background-color: rgb(248 250 252 / 0.9);
+}
+
+@keyframes fhin {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes fhflash {
+  0% { box-shadow: 0 0 0 0 rgba(31, 156, 143, 0.45); }
+  100% { box-shadow: 0 0 0 14px rgba(31, 156, 143, 0); }
+}
+.flash {
+  animation: fhflash 1.2s ease-out 2;
+}
+.fade-in {
+  animation: fhin 0.2s ease-out;
+}
+
+/* Sidebar scroll area: no visible scrollbar on the dark frame */
+.nav-scroll {
+  scrollbar-width: none;
+}
+.nav-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+@media print {
+  body { background: white; }
+  .no-print { display: none !important; }
+}
