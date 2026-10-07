@@ -27,7 +27,7 @@ app = FastAPI(title="Fulfillment Hub API", version="1.0.0", lifespan=lifespan,
 origins = [o.strip().rstrip("/") for o in
            os.getenv("FH_CORS_ORIGINS", "http://localhost:3000,http://127.0.0.1:3000").split(",") if o.strip()]
 # Optional pattern, e.g. https://.*\.vercel\.app, so preview deployments can call the API too.
-# Not needed when the frontend proxies /api through its own domain (the default Vercel setup).
+# Not needed on Vercel: the frontend and backend share one domain (see vercel.json), so calls are same-origin.
 origin_regex = os.getenv("FH_CORS_ORIGIN_REGEX") or None
 app.add_middleware(CORSMiddleware, allow_origins=origins, allow_origin_regex=origin_regex,
                    allow_credentials=False, allow_methods=["*"], allow_headers=["*"])

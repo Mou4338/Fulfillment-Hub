@@ -1,6 +1,6 @@
 
-// An empty value means "same origin": requests go to /api on this site and
-// next.config.mjs proxies them to the backend (the Vercel setup).
+// An empty value means "same origin": requests go to /api on this site, which
+// vercel.json routes to the backend service (the Vercel setup).
 export const API_URL = (process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000").replace(/\/$/, "");
 
 type Identity = { role: "office" | "warehouse"; user: string };
@@ -34,7 +34,7 @@ function friendlyDetail(body: any, status: number): string {
       .join("; ");
   }
   if (status === 0)
-    return "Can't reach the server. Is the backend running on " + (API_URL || process.env.NEXT_PUBLIC_BACKEND_URL || "/api") + "?";
+    return "Can't reach the server. Is the backend running on " + (API_URL || "this site's /api") + "?";
   return "Something went wrong. Please try again.";
 }
 

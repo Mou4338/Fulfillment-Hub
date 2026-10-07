@@ -1,0 +1,12 @@
+backend/tests/
+backend/pytest.ini
+backend/.venv/
+backend/*.db
+backend/*.db-wal
+backend/*.db-shm
+**/__pycache__/
+**/.pytest_cache/
+frontend/node_modules/
+frontend/.next/
+frontend/.env.local
+*.tsbuildinfo
