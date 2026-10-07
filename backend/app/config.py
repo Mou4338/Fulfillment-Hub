@@ -8,7 +8,11 @@ import os
 
 BUSINESS_TZ = os.getenv("FH_TZ", "Asia/Kolkata")
 
-DB_PATH = os.getenv("FH_DB_PATH", os.path.join(os.path.dirname(__file__), "..", "fulfillment_hub.db"))
+# On Vercel the deployment folder is read-only; /tmp is the only writable place.
+# The demo database is created and seeded there automatically on first start.
+_DEFAULT_DB_PATH = ("/tmp/fulfillment_hub.db" if os.getenv("VERCEL")
+                    else os.path.join(os.path.dirname(__file__), "..", "fulfillment_hub.db"))
+DB_PATH = os.getenv("FH_DB_PATH", _DEFAULT_DB_PATH)
 
 PRIORITY_CUTOFF = "14:00"
 NORMAL_CUTOFF = "16:00"

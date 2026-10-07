@@ -54,6 +54,30 @@ python -m pytest            # or: python -m unittest discover -s tests
 cd frontend && npm run build && npm start
 ```
 
+### Deploy to Vercel
+
+The repo deploys as **two Vercel projects from the same Git repository** — one for the API, one for the web app. No code changes or config files to edit; just two settings per project.
+
+**1. Backend (FastAPI)**
+
+1. Vercel → **Add New → Project** → import this repo.
+2. **Root Directory:** `backend`. Framework preset: **FastAPI** (auto-detected from `app/main.py`).
+3. No environment variables needed. Deploy.
+4. Check it: open `https://<backend>.vercel.app/api/health` → `{"ok": true, ...}`. API docs are at `/docs`.
+
+**2. Frontend (Next.js)**
+
+1. **Add New → Project** → import the same repo again.
+2. **Root Directory:** `frontend`. Framework preset: **Next.js** (auto-detected).
+3. Environment variable: `BACKEND_URL` = the backend URL from step 1 (e.g. `https://fulfillment-hub-api.vercel.app`, no trailing slash).
+4. Deploy and open the site.
+
+The web app calls `/api/...` on its own domain and Next.js forwards those calls to `BACKEND_URL`, so there is no CORS to configure. If you change `BACKEND_URL` later, redeploy the frontend (it is read at build time).
+
+**About the demo data on Vercel.** Vercel Functions have no permanent disk, so the backend keeps its SQLite database in `/tmp` and seeds fresh demo data automatically when a new instance starts. Everything works normally while an instance is warm, but after a period of inactivity (or if traffic is spread over several instances) the data starts again from a fresh seed — like pressing **Reset demo data**. That is fine for a demo. For data that must persist, run the backend on a host with a persistent disk (e.g. Render, Railway, Fly.io) with `uvicorn app.main:app --host 0.0.0.0 --port $PORT`, set `FH_DB_PATH` to a file on that disk, and point the frontend's `BACKEND_URL` at it.
+
+Optional backend environment variables: `FH_TZ` (business time zone, default `Asia/Kolkata`), `FH_DB_PATH` (database file), and `FH_CORS_ORIGINS` / `FH_CORS_ORIGIN_REGEX` (only if a frontend calls the API directly via `NEXT_PUBLIC_API_URL` instead of using `BACKEND_URL`).
+
 ---
 
 ## Demo roles (no passwords)

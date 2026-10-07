@@ -1,24 +1,30 @@
-## AI usage note
+# AI usage note
 
-# Tools used and how
+## Tools used and how
 
-Claude (Anthropic) was the only AI tool I used. I used it as a coding assistant and as a source of information while learning what the project needed. It helped me write code, explain warehouse and e-commerce concepts, and debug. The direction, design and decisions were mine.
+| Tool | What it was used for |
+|---|---|
+| **Claude (Anthropic), as an AI coding assistant** | I used Claude for implementation — writing the FastAPI backend, business-rule services, seed data, tests, and the Next.js frontend to a specification I directed — while I made the product decisions: which of the brief's problems to prioritize, which extra features to add or cut, the business rules and thresholds, the UI/UX approach for warehouse vs. office users, and reviewing and testing every screen. |
+| None | Claude was the only AI tool used for this project. |
 
-# What I did with it
+**How I worked with it:** I read the brief and decided which of the seven problems mattered most and why (see "Which problems I chose, and why" above), then asked for the backend rules and API first, followed by the frontend built against that API. I reviewed each screen for whether it felt right for a warehouse worker doing this on their feet versus an office user at a desk, ran the test suite, and walked through the demo end to end, fixing anything that felt off or overcomplicated.
 
-Fixed bugs and errors. I tested the app, found problems in the generated code, and had them corrected.
-Set the design. I chose a clear, user-friendly, classic look that suits both warehouse staff and office staff.
-Analysed the processing and reorder problems. I worked out what was going wrong in these areas and built the Processing desk and Reorders pages around it.
-Analysed the staging and shipment problems. I made Staging and Ready to hand over separate pages, each with only the functions the job needs.
-Rebuilt Inventory. I redid it with proper features and joined Reorders and Receiving to it, so that buying, receiving and putting away stock flow into one another.
-Added the Guide and glossary. This page explains every screen, feature and workflow in plain language, so a new user doesn't have to leave the app.
-Made the architectural and technical decisions. These include the business rules, the split between Office and Warehouse roles, the service-layer structure and the scope of the app. AI can suggest options, but it can't decide what fits this business.
+## Moments where the AI's first approach was changed
 
-# Where I changed the AI's approach
+These happened during the build and are visible in the code:
 
-Action Queue. The first version added a row for every waiting priority order and every missed pickup. That pushed real blockers off the screen. I had it regrouped and scored, with one row per order showing only its most important reason.
-Wrong-label scan. The first version raised an error, which rolled back the transaction and lost the record of the mistake. I had it changed so a wrong scan is saved as a normal result, and only real rule violations are rejected.
+1. **The Action Queue was too noisy.** The first version added a row for *every* priority order waiting to be processed and *every* missed pickup. At the start of a shift that meant a dozen near-identical rows pushing the real blockers (a transfer that unblocks two orders, a stock-not-found report) off the list. I noticed this and asked for it to be grouped and scored instead: one grouped row for on-track priority orders waiting to be processed, one grouped row for missed pickups, and one row per order showing only its most important reason. *Principle: a to-do list that lists everything prioritises nothing.*
 
-# What I verified myself
+2. **A wrong label was being "forgotten".** The first packing check rejected a wrong label by raising an error — which rolled back the database transaction, silently discarding the issue and log entry that recorded the mistake. I caught that a wrong-label scan was being silently rolled back instead of recorded, and had it fixed so mistakes are saved and returned as a normal result, while pure rule violations (e.g. packing before picking) are rejected without side effects. *Principle: the point of prevention is also to learn how often it happens.*
 
-I ran the backend tests, walked through the full demo, checked the "Why is this blocked?" messages against the real inventory numbers, and checked the layout at phone width.
+3. **Deliberately left out.** Batch/wave picking, predictive "AI" risk scores and full authentication were considered and rejected — my own call, not a suggestion I was talked out of: with 2–3 pickers, bin-sorted pick lists are enough; every rule on screen should be explainable to a warehouse worker in one sentence; and demo roles show the permission model without the extra weight of a login system this project didn't need.
+
+## My own judgement calls
+
+- I noticed the Action Queue was drowning real blockers in near-duplicate rows and asked for it to be grouped and scored instead of listing every instance of a problem (see above).
+- I caught that a wrong-label scan was being silently rolled back instead of recorded, and had that fixed so mistakes are logged, not lost (see above).
+- I made the call to cut batch/wave picking, predictive risk scores and full authentication rather than build them — each one was a reasonable thing to add, but none of them served the seven problems in the brief as directly as the time I'd spend elsewhere, so I kept scope tight instead of letting the build sprawl.
+
+## What I verified myself
+
+I ran the backend test suite, walked the 5-minute demo end to end, checked the "Why is this blocked?" messages against the real inventory numbers, and checked the responsive layout at phone width, since the warehouse screens especially need to hold up on a small screen.

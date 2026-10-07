@@ -1,0 +1,9 @@
+tests/
+pytest.ini
+.venv/
+.pytest_cache/
+__pycache__/
+*.pyc
+*.db
+*.db-wal
+*.db-shm
